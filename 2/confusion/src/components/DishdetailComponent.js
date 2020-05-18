@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import { Card, CardImg, CardBody, CardText, CardTitle } from 'reactstrap';
+import Moment from 'react-moment';
 
 class Dishdetail extends Component {
 
     renderDish() {
         const dish = this.props.selectedDish;
         if (dish != null) {
-            const comments = this.renderComments()
+            const comments = this.getCommentDetails(dish)
+            const dishDetails = this.getDishDetails(dish)
             return (
-                <div className="row">
-                <div key={dish.id} className="col-12 col-sm-12 col-md-5 m-1">
-                    <Card>
-                        <CardImg width="100%" src={dish.image} alt={dish.name} />
-                        <CardBody>
-                            <CardTitle>{dish.name}</CardTitle>
-                            <CardText>{dish.description}</CardText>
-                        </CardBody>
-                    </Card>
-                </div>
-                {comments}
+                <div key={dish.id} className="row">
+                    <div className="col-12 col-sm-12 col-md-5 m-1">
+                        {dishDetails}
+                    </div>
+                    <div className="col-12 col-sm-12 col-md-5 m-1">
+                        {comments}
+                    </div>
                 </div>
             );
         } else {
@@ -28,33 +26,32 @@ class Dishdetail extends Component {
         }
     }
 
-    renderComments() {
-        const dish = this.props.selectedDish;
-        const commentDetail = this.getCommentDetails(dish)
+    getDishDetails(dish) {
         return (
-            <div className="col-12 col-md-5 m-1">
-                {commentDetail}
-            </div>
+            <Card>
+                <CardImg width="100%" src={dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
         );
     }
 
     getCommentDetails(dish) {
-        return dish.comments.map(comment =>
+        const comments = dish.comments.map((comment) =>
             <div key={comment.id}>
-                <div className="row">
-                    {comment.author} - {comment.date}
-                </div>
-                <div className="row">
-                    Rating: {comment.rating}
-                </div>
-                <div className="row">
-                    <b>Comment:</b>
-                </div>
-                <div className="row">
-                    <p>
-                        {comment.comment}
-                    </p>
-                </div>
+                <li>{comment.comment}</li>
+                <li>-- {comment.author}, <Moment interval={0} format="YYYY/MM/DD HH:mm Z" date={comment.date} /></li>
+                <p></p>
+            </div>
+        );
+        return (
+            <div>
+                <h4>Comments</h4>
+                <ul className="list-unstyled">
+                    {comments}
+                </ul>
             </div>
         );
     }
