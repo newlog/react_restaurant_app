@@ -5,17 +5,19 @@ import Moment from 'react-moment';
 class Dishdetail extends Component {
 
     renderDish() {
-        const dish = this.props.selectedDish;
+        const dish = this.props.dish;
         if (dish != null) {
             const comments = this.getCommentDetails(dish)
             const dishDetails = this.getDishDetails(dish)
             return (
-                <div key={dish.id} className="row">
-                    <div className="col-12 col-sm-12 col-md-5 m-1">
-                        {dishDetails}
-                    </div>
-                    <div className="col-12 col-sm-12 col-md-5 m-1">
-                        {comments}
+                <div className="container">
+                    <div key={dish.id} className="row">
+                        <div className="col-12 col-sm-12 col-md-5 m-1">
+                            {dishDetails}
+                        </div>
+                        <div className="col-12 col-sm-12 col-md-5 m-1">
+                            {comments}
+                        </div>
                     </div>
                 </div>
             );
@@ -39,6 +41,8 @@ class Dishdetail extends Component {
     }
 
     getCommentDetails(dish) {
+        // Instead of "moment" module for dates, we can use standard JS as:
+        // {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse({comment.date})))}
         const comments = dish.comments.map((comment) =>
             <div key={comment.id}>
                 <li>{comment.comment}</li>
