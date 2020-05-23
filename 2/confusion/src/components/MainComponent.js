@@ -1,39 +1,41 @@
 import React, { Component } from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
-import Menu from './MenuComponent'
-import Dishdetail from './DishdetailComponent';
-import { DISHES } from '../shared/dishes';
+import Menu from './MenuComponent';
+import DishDetail from './DishdetailComponent';
+import DISHES from '../shared/dishes';
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            dishes: DISHES,
-            selectedDish: null
-        };
-    }
+    this.state = {
+      dishes: DISHES,
+      selectedDish: null,
+    };
+  }
 
-    onDishSelect(dishId) {
-        this.setState({ selectedDish: dishId });
-    }
+  onDishSelect(dishId) {
+    this.setState({ selectedDish: dishId });
+  }
 
-    render () {
-        return (
-        <div>
-            <Navbar dark color="primary">
-                <div className="container">
-                <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
-                </div>
-            </Navbar>
-            <Menu dishes={this.state.dishes} 
-                onClick={(dishId) => this.onDishSelect(dishId)} />
-            <Dishdetail 
-                dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0]} />
-        </div>
-        );
-    }
+  render() {
+    // this line is to avoid eslint "Must use destructuring state assignment"
+    // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
+    const { dishes, selectedDish } = this.state;
+    return (
+      <div>
+        <Navbar dark color="primary">
+          <div className="container">
+            <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
+          </div>
+        </Navbar>
+        <Menu dishes={dishes} onClick={(dishId) => this.onDishSelect(dishId)} />
+        <DishDetail
+          dish={dishes.filter((dish) => dish.id === selectedDish)[0]}
+        />
+      </div>
+    );
+  }
 }
 
 export default Main;
