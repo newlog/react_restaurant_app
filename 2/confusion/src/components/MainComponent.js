@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Home from './HomeComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Menu from './MenuComponent';
@@ -11,25 +13,28 @@ class Main extends Component {
 
     this.state = {
       dishes: DISHES,
-      selectedDish: null,
     };
-  }
-
-  onDishSelect(dishId) {
-    this.setState({ selectedDish: dishId });
   }
 
   render() {
     // this line is to avoid eslint "Must use destructuring state assignment"
     // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
-    const { dishes, selectedDish } = this.state;
+    const { dishes } = this.state;
+    const HomePage = () => {
+      return <Home />;
+    };
     return (
       <div>
         <Header />
-        <Menu dishes={dishes} onClick={(dishId) => this.onDishSelect(dishId)} />
-        <DishDetail
-          dish={dishes.filter((dish) => dish.id === selectedDish)[0]}
-        />
+        <Switch>
+          <Route path="/home" component={HomePage} />
+          <Route
+            exact
+            path="/menu"
+            component={() => <Menu dishes={dishes} />}
+          />
+          <Redirect to="/home" />
+        </Switch>
         <Footer />
       </div>
     );
