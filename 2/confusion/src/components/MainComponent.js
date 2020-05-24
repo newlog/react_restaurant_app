@@ -5,9 +5,9 @@ import Contact from './ContactComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Menu from './MenuComponent';
-// import DishDetail from './DishdetailComponent';
+import DishDetail from './DishdetailComponent';
 import DISHES from '../shared/dishes';
-// import COMMENTS from '../shared/comments';
+import COMMENTS from '../shared/comments';
 import LEADERS from '../shared/leaders';
 import PROMOTIONS from '../shared/promotions';
 
@@ -17,7 +17,7 @@ class Main extends Component {
 
     this.state = {
       dishes: DISHES,
-      // comments: COMMENTS,
+      comments: COMMENTS,
       promotions: PROMOTIONS,
       leaders: LEADERS,
     };
@@ -26,7 +26,7 @@ class Main extends Component {
   render() {
     // this line is to avoid eslint "Must use destructuring state assignment"
     // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
-    const { dishes, promotions, leaders } = this.state;
+    const { dishes, comments, promotions, leaders } = this.state;
     const HomePage = () => {
       return (
         <Home
@@ -35,6 +35,21 @@ class Main extends Component {
             promotions.filter((promotion) => promotion.featured === true)[0]
           }
           leader={leaders.filter((leader) => leader.featured === true)[0]}
+        />
+      );
+    };
+
+    const DishWithId = ({ match }) => {
+      return (
+        <DishDetail
+          dish={
+            dishes.filter(
+              (dish) => dish.id === parseInt(match.params.dishId, 10),
+            )[0]
+          }
+          comments={comments.filter(
+            (comment) => comment.dishId === parseInt(match.params.dishId, 10),
+          )}
         />
       );
     };
@@ -49,6 +64,7 @@ class Main extends Component {
             path="/menu"
             component={() => <Menu dishes={dishes} />}
           />
+          <Route path="/menu/:dishId" component={DishWithId} />
           <Route exact path="/contactus" component={Contact} />
           <Redirect to="/home" />
         </Switch>
