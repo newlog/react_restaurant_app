@@ -5,6 +5,7 @@ import Contact from './ContactComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Menu from './MenuComponent';
+import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
 import DISHES from '../shared/dishes';
 import COMMENTS from '../shared/comments';
@@ -63,6 +64,11 @@ class Main extends Component {
             exact
             path="/menu"
             component={() => <Menu dishes={dishes} />}
+          />
+          <Route
+            exact
+            path="/aboutus"
+            component={() => <About leads={leaders} />}
           />
           <Route path="/menu/:dishId" component={DishWithId} />
           <Route exact path="/contactus" component={Contact} />
