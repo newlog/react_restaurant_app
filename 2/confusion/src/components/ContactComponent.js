@@ -8,6 +8,7 @@ import {
   Label,
   Input,
   Col,
+  FormFeedback,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
@@ -22,10 +23,25 @@ class Contact extends Component {
       agree: false,
       contactType: 'Tel.',
       message: '',
+      touched: {
+        firstname: false,
+        lastname: false,
+        telnum: false,
+        email: false,
+      },
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
+
+  handleBlur = (field) => () => {
+    const { touched } = this.state;
+    this.setState({
+      // ... is the spread operator: https://stackoverflow.com/questions/31048953/what-do-these-three-dots-in-react-do
+      touched: { ...touched, [field]: true },
+    });
+  };
 
   handleInputChange(event) {
     const { target } = event;
@@ -37,8 +53,40 @@ class Contact extends Component {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   handleSubmit(event) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
     event.preventDefault();
+  }
+
+  validate(firstname, lastname, telnum, email) {
+    const errors = {
+      firstname: '',
+      lastname: '',
+      telnum: '',
+      email: '',
+    };
+
+    const { touched } = this.state;
+
+    if (touched.firstname && firstname.length < 3)
+      errors.firstname = 'First Name should be >= 3 characters.';
+    else if (touched.firstname && firstname.length > 10)
+      errors.firstname = 'First Name should be <= 10 characters.';
+
+    if (touched.lastname && lastname.length < 3)
+      errors.lastname = 'Last Name should be >= 3 characters.';
+    else if (touched.lastname && lastname.length > 10)
+      errors.lastname = 'Last Name should be <= 10 characters.';
+
+    const reg = /^\d+$/;
+    if (touched.telnum && !reg.test(telnum))
+      errors.telnum = 'Tel. Number should contain only numbers.';
+
+    if (touched.email && email.split('').filter((x) => x === '@').length !== 1)
+      errors.email = 'Email should contain a @';
+
+    return errors;
   }
 
   render() {
@@ -51,6 +99,7 @@ class Contact extends Component {
       contactType,
       message,
     } = this.state;
+    const errors = this.validate(firstname, lastname, telnum, email);
     return (
       <div className="container">
         <div className="row">
@@ -128,8 +177,12 @@ class Contact extends Component {
                     name="firstname"
                     placeholder="First Name"
                     value={firstname}
+                    valid={errors.firstname === ''}
+                    invalid={errors.firstname !== ''}
+                    onBlur={this.handleBlur('firstname')}
                     onChange={this.handleInputChange}
                   />
+                  <FormFeedback>{errors.firstname}</FormFeedback>
                 </Col>
               </FormGroup>
               <FormGroup row>
@@ -143,8 +196,12 @@ class Contact extends Component {
                     name="lastname"
                     placeholder="Last Name"
                     value={lastname}
+                    valid={errors.lastname === ''}
+                    invalid={errors.lastname !== ''}
+                    onBlur={this.handleBlur('lastname')}
                     onChange={this.handleInputChange}
                   />
+                  <FormFeedback>{errors.lastname}</FormFeedback>
                 </Col>
               </FormGroup>
               <FormGroup row>
@@ -158,8 +215,12 @@ class Contact extends Component {
                     name="telnum"
                     placeholder="Contact Tel."
                     value={telnum}
+                    valid={errors.telnum === ''}
+                    invalid={errors.telnum !== ''}
+                    onBlur={this.handleBlur('telnum')}
                     onChange={this.handleInputChange}
                   />
+                  <FormFeedback>{errors.telnum}</FormFeedback>
                 </Col>
               </FormGroup>
               <FormGroup row>
@@ -173,8 +234,12 @@ class Contact extends Component {
                     name="email"
                     placeholder="name@domain.com"
                     value={email}
+                    valid={errors.email === ''}
+                    invalid={errors.email !== ''}
+                    onBlur={this.handleBlur('email')}
                     onChange={this.handleInputChange}
                   />
+                  <FormFeedback>{errors.email}</FormFeedback>
                 </Col>
               </FormGroup>
               <FormGroup row>
