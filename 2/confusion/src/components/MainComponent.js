@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import Header from './HeaderComponent';
@@ -7,27 +8,25 @@ import Footer from './FooterComponent';
 import Menu from './MenuComponent';
 import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
-import DISHES from '../shared/dishes';
-import COMMENTS from '../shared/comments';
-import LEADERS from '../shared/leaders';
-import PROMOTIONS from '../shared/promotions';
 
+// all the state fields become available to the component as props thanks to the last line:
+// export default withRouter(connect(mapStateToProps)(Main));
+const mapStateToProps = (state) => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders,
+  };
+};
+
+// eslint-disable-next-line react/prefer-stateless-function
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dishes: DISHES,
-      comments: COMMENTS,
-      promotions: PROMOTIONS,
-      leaders: LEADERS,
-    };
-  }
-
   render() {
     // this line is to avoid eslint "Must use destructuring state assignment"
     // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
-    const { dishes, comments, promotions, leaders } = this.state;
+    // state is not used anymore, as the state is retrieved from the Store and converted into component props
+    const { dishes, comments, promotions, leaders } = this.props;
     const HomePage = () => {
       return (
         <Home
@@ -80,4 +79,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default withRouter(connect(mapStateToProps)(Main));
