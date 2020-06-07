@@ -10,96 +10,191 @@ import {
   Col,
   FormFeedback,
 } from 'reactstrap';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-class Contact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstname: '',
-      lastname: '',
-      telnum: '',
-      email: '',
-      agree: false,
-      contactType: 'Tel.',
-      message: '',
-      touched: {
-        firstname: false,
-        lastname: false,
-        telnum: false,
-        email: false,
-      },
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-  }
+function ContactForm() {
+  const { register, handleSubmit, errors } = useForm();
 
-  handleBlur = (field) => () => {
-    const { touched } = this.state;
-    this.setState({
-      // ... is the spread operator: https://stackoverflow.com/questions/31048953/what-do-these-three-dots-in-react-do
-      touched: { ...touched, [field]: true },
-    });
+  const onSubmit = (data) => {
+    // eslint-disable-next-line no-alert
+    alert(JSON.stringify(data));
   };
 
-  handleInputChange(event) {
-    const { target } = event;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const { name } = target;
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <FormGroup row>
+        <Label htmlFor="firstname" md={2}>
+          First Name
+        </Label>
+        <Col md={10}>
+          <Input
+            type="text"
+            id="firstname"
+            name="firstname"
+            placeholder="First Name"
+            // this is a hack to have dynamic attributes
+            // without the "invalid" the FormFeedback is not shown
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(errors.firstname ? { invalid: true } : {})}
+            innerRef={register({
+              required: 'First name is required.',
+              minLength: {
+                value: 3,
+                message: 'First name should be at least 3 characters.',
+              },
+            })}
+          />
+          <ContactErrorMessages
+            errorMessage={
+              errors && errors.firstname ? errors.firstname.message : ''
+            }
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Label htmlFor="lastname" md={2}>
+          Last Name
+        </Label>
+        <Col md={10}>
+          <Input
+            type="text"
+            id="lastname"
+            name="lastname"
+            placeholder="Last Name"
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(errors.lastname ? { invalid: true } : {})}
+            innerRef={register({
+              required: 'Last name is required.',
+              minLength: {
+                value: 3,
+                message: 'Last name should be at least 3 characters.',
+              },
+            })}
+          />
+          <ContactErrorMessages
+            errorMessage={
+              errors && errors.lastname ? errors.lastname.message : ''
+            }
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Label htmlFor="telnum" md={2}>
+          Contact Tel.
+        </Label>
+        <Col md={10}>
+          <Input
+            type="tel"
+            id="telnum"
+            name="telnum"
+            placeholder="Contact Tel."
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(errors.telnum ? { invalid: true } : {})}
+            innerRef={register({
+              required: 'Contact telephone is required.',
+              minLength: {
+                value: 9,
+                message: 'Contact telephone should be at least 9 characters.',
+              },
+              validate: (value) =>
+                !Number.isNaN(Number(value)) ||
+                'Contact telephone should be a number.',
+            })}
+          />
+          <ContactErrorMessages
+            errorMessage={errors && errors.telnum ? errors.telnum.message : ''}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Label htmlFor="email" md={2}>
+          Email
+        </Label>
+        <Col md={10}>
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="name@domain.com"
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(errors.email ? { invalid: true } : {})}
+            innerRef={register({
+              pattern: {
+                required: 'Email is required.',
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: 'Invalid email format.',
+              },
+            })}
+          />
+          <ContactErrorMessages
+            errorMessage={errors && errors.email ? errors.email.message : ''}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col md={{ size: 6, offset: 2 }}>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" name="agree" innerRef={register} />
+              <strong>May we contact you?</strong>
+            </Label>
+          </FormGroup>
+        </Col>
+        <Col md={{ size: 3, offset: 1 }}>
+          <Input type="select" name="contactType" innerRef={register}>
+            <option>Tel.</option>
+            <option>Email</option>
+          </Input>
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Label htmlFor="feedback" md={2}>
+          Your Feedback
+        </Label>
+        <Col md={10}>
+          <Input
+            type="textarea"
+            id="message"
+            name="message"
+            rows="12"
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(errors.message ? { invalid: true } : {})}
+            innerRef={register({
+              required: 'Feedback is required.',
+            })}
+          />
+          <ContactErrorMessages
+            errorMessage={
+              errors && errors.message ? errors.message.message : ''
+            }
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col md={{ size: 10, offset: 2 }}>
+          <Button type="submit" color="primary">
+            Send Feedback
+          </Button>
+        </Col>
+      </FormGroup>
+    </Form>
+  );
+}
 
-    this.setState({
-      [name]: value,
-    });
-  }
+const ContactErrorMessages = ({ errorMessage }) => {
+  return (
+    <FormFeedback>
+      {errorMessage ? <div>{errorMessage}</div> : <div />}
+    </FormFeedback>
+  );
+};
 
-  // eslint-disable-next-line class-methods-use-this
-  handleSubmit(event) {
-    // https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
-    event.preventDefault();
-  }
-
-  validate(firstname, lastname, telnum, email) {
-    const errors = {
-      firstname: '',
-      lastname: '',
-      telnum: '',
-      email: '',
-    };
-
-    const { touched } = this.state;
-
-    if (touched.firstname && firstname.length < 3)
-      errors.firstname = 'First Name should be >= 3 characters.';
-    else if (touched.firstname && firstname.length > 10)
-      errors.firstname = 'First Name should be <= 10 characters.';
-
-    if (touched.lastname && lastname.length < 3)
-      errors.lastname = 'Last Name should be >= 3 characters.';
-    else if (touched.lastname && lastname.length > 10)
-      errors.lastname = 'Last Name should be <= 10 characters.';
-
-    const reg = /^\d+$/;
-    if (touched.telnum && !reg.test(telnum))
-      errors.telnum = 'Tel. Number should contain only numbers.';
-
-    if (touched.email && email.split('').filter((x) => x === '@').length !== 1)
-      errors.email = 'Email should contain a @';
-
-    return errors;
-  }
-
+// eslint-disable-next-line react/prefer-stateless-function
+class Contact extends Component {
   render() {
-    const {
-      firstname,
-      lastname,
-      telnum,
-      email,
-      agree,
-      contactType,
-      message,
-    } = this.state;
-    const errors = this.validate(firstname, lastname, telnum, email);
+    // const errors = this.validate(firstname, lastname, telnum, email);
+
     return (
       <div className="container">
         <div className="row">
@@ -165,132 +260,7 @@ class Contact extends Component {
             <h3>Send us your feedback</h3>
           </div>
           <div className="col-12 col-md-9">
-            <Form onSubmit={this.handleSubmit}>
-              <FormGroup row>
-                <Label htmlFor="firstname" md={2}>
-                  First Name
-                </Label>
-                <Col md={10}>
-                  <Input
-                    type="text"
-                    id="firstname"
-                    name="firstname"
-                    placeholder="First Name"
-                    value={firstname}
-                    valid={errors.firstname === ''}
-                    invalid={errors.firstname !== ''}
-                    onBlur={this.handleBlur('firstname')}
-                    onChange={this.handleInputChange}
-                  />
-                  <FormFeedback>{errors.firstname}</FormFeedback>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label htmlFor="lastname" md={2}>
-                  Last Name
-                </Label>
-                <Col md={10}>
-                  <Input
-                    type="text"
-                    id="lastname"
-                    name="lastname"
-                    placeholder="Last Name"
-                    value={lastname}
-                    valid={errors.lastname === ''}
-                    invalid={errors.lastname !== ''}
-                    onBlur={this.handleBlur('lastname')}
-                    onChange={this.handleInputChange}
-                  />
-                  <FormFeedback>{errors.lastname}</FormFeedback>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label htmlFor="telnum" md={2}>
-                  Contact Tel.
-                </Label>
-                <Col md={10}>
-                  <Input
-                    type="tel"
-                    id="telnum"
-                    name="telnum"
-                    placeholder="Contact Tel."
-                    value={telnum}
-                    valid={errors.telnum === ''}
-                    invalid={errors.telnum !== ''}
-                    onBlur={this.handleBlur('telnum')}
-                    onChange={this.handleInputChange}
-                  />
-                  <FormFeedback>{errors.telnum}</FormFeedback>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label htmlFor="email" md={2}>
-                  Email
-                </Label>
-                <Col md={10}>
-                  <Input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="name@domain.com"
-                    value={email}
-                    valid={errors.email === ''}
-                    invalid={errors.email !== ''}
-                    onBlur={this.handleBlur('email')}
-                    onChange={this.handleInputChange}
-                  />
-                  <FormFeedback>{errors.email}</FormFeedback>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md={{ size: 6, offset: 2 }}>
-                  <FormGroup check>
-                    <Label check>
-                      <Input
-                        type="checkbox"
-                        name="agree"
-                        checked={agree}
-                        onChange={this.handleInputChange}
-                      />
-                      <strong>May we contact you?</strong>
-                    </Label>
-                  </FormGroup>
-                </Col>
-                <Col md={{ size: 3, offset: 1 }}>
-                  <Input
-                    type="select"
-                    name="contactType"
-                    value={contactType}
-                    onChange={this.handleInputChange}
-                  >
-                    <option>Tel.</option>
-                    <option>Email</option>
-                  </Input>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label htmlFor="feedback" md={2}>
-                  Your Feedback
-                </Label>
-                <Col md={10}>
-                  <Input
-                    type="textarea"
-                    id="message"
-                    name="message"
-                    rows="12"
-                    value={message}
-                    onChange={this.handleInputChange}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col md={{ size: 10, offset: 2 }}>
-                  <Button type="submit" color="primary">
-                    Send Feedback
-                  </Button>
-                </Col>
-              </FormGroup>
-            </Form>
+            <ContactForm />
           </div>
         </div>
       </div>
