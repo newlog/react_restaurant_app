@@ -11,6 +11,7 @@ export const initialState = {
 };
 
 // pure function, it should not change the state
+// eslint-disable-next-line no-unused-vars
 export const Reducer = (state = initialState, action) => {
   return state;
 };

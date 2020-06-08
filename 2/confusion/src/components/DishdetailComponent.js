@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Moment from 'react-moment';
 import {
   Card,
@@ -8,8 +8,10 @@ import {
   CardTitle,
   Breadcrumb,
   BreadcrumbItem,
+  Button,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import AddComment from './AddCommentComponent';
 
 function RenderDish({ dish }) {
   return (
@@ -49,35 +51,68 @@ function RenderComments({ comments }) {
   );
 }
 
-const DishDetail = (props) => {
-  const { dish, comments } = props;
-  if (dish != null) {
-    return (
-      <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/menu">Menu</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>{dish.name}</BreadcrumbItem>
-          </Breadcrumb>
-          <div className="col-12">
-            <h3>{dish.name}</h3>
-            <hr />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12 col-sm-12 col-md-5 m-1">
-            <RenderDish dish={dish} />
-          </div>
-          <div className="col-12 col-sm-12 col-md-5 m-1">
-            <RenderComments comments={comments} />
-          </div>
-        </div>
-      </div>
-    );
+class DishDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dish: props.dish,
+      comments: props.comments,
+      isModalOpen: false,
+    };
+    this.toggleCommentModal = this.toggleCommentModal.bind(this);
   }
-  return <div />;
-};
+
+  toggleCommentModal() {
+    const { isModalOpen } = this.state;
+    this.setState({
+      isModalOpen: !isModalOpen,
+    });
+  }
+
+  render() {
+    const { dish, comments, isModalOpen } = this.state;
+    if (this.dish !== null) {
+      return (
+        <>
+          <div className="container">
+            <div className="row">
+              <Breadcrumb>
+                <BreadcrumbItem>
+                  <Link to="/menu">Menu</Link>
+                </BreadcrumbItem>
+                <BreadcrumbItem active>{dish.name}</BreadcrumbItem>
+              </Breadcrumb>
+              <div className="col-12">
+                <h3>{dish.name}</h3>
+                <hr />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12 col-sm-12 col-md-5 m-1">
+                <RenderDish dish={dish} />
+              </div>
+              <div className="col-12 col-sm-12 col-md-5 m-1">
+                <RenderComments comments={comments} />
+                <Button
+                  outline
+                  color="secondary"
+                  onClick={this.toggleCommentModal}
+                >
+                  <span className="fa fa-pencil fa-lg mr-2" />
+                  Submit Comment
+                </Button>
+              </div>
+            </div>
+          </div>
+          <AddComment
+            isModalOpen={isModalOpen}
+            toggleCommentModal={this.toggleCommentModal}
+          />
+        </>
+      );
+    }
+    return <div />;
+  }
+}
 
 export default DishDetail;
