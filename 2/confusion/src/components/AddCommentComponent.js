@@ -12,13 +12,28 @@ import {
 } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 
-const AddComment = ({ isModalOpen, toggleCommentModal }) => {
+const AddComment = ({
+  isModalOpen,
+  setModalVisibility,
+  addCommentAction,
+  dishId,
+}) => {
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data) => {
-    // eslint-disable-next-line no-alert
-    alert(JSON.stringify(data));
-    toggleCommentModal();
+    addCommentAction(dishId, data.rating, data.name, data.comment);
+  };
+
+  const toggleCommentModal = () => {
+    setModalVisibility(!isModalOpen);
+  };
+
+  const ContactErrorMessages = ({ errorMessage }) => {
+    return (
+      <FormFeedback>
+        {errorMessage ? <div>{errorMessage}</div> : <div />}
+      </FormFeedback>
+    );
   };
 
   return (
@@ -28,12 +43,17 @@ const AddComment = ({ isModalOpen, toggleCommentModal }) => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Label htmlFor="rating">Rating</Label>
-            <Input type="select" name="rating" id="rating">
-              <option>5</option>
-              <option>4</option>
-              <option>3</option>
-              <option>2</option>
-              <option>1</option>
+            <Input
+              type="select"
+              name="rating"
+              id="rating"
+              innerRef={register()}
+            >
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -84,14 +104,6 @@ const AddComment = ({ isModalOpen, toggleCommentModal }) => {
         </Form>
       </ModalBody>
     </Modal>
-  );
-};
-
-const ContactErrorMessages = ({ errorMessage }) => {
-  return (
-    <FormFeedback>
-      {errorMessage ? <div>{errorMessage}</div> : <div />}
-    </FormFeedback>
   );
 };
 

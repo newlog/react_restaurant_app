@@ -25,30 +25,48 @@ function RenderDish({ dish }) {
   );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addCommentAction, dishId }) {
+  const [isModalOpen, setModalVisibility] = React.useState(false);
   // Instead of "moment" module for dates, we can use standard JS as:
   // {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse({comment.date})))}
-  return (
-    <div>
-      <h4>Comments</h4>
-      <ul className="list-unstyled">
-        {comments.map((comment) => (
-          <div key={comment.id}>
-            <li>{comment.comment}</li>
-            <li>
-              -- {comment.author},{' '}
-              <Moment
-                interval={0}
-                format="YYYY/MM/DD HH:mm Z"
-                date={comment.date}
-              />
-            </li>
-            <p />
-          </div>
-        ))}
-      </ul>
-    </div>
-  );
+
+  const toggleCommentModal = () => {
+    setModalVisibility(!isModalOpen);
+  };
+
+  if (comments !== null)
+    return (
+      <div>
+        <h4>Comments</h4>
+        <ul className="list-unstyled">
+          {comments.map((comment) => (
+            <div key={comment.id}>
+              <li>{comment.comment}</li>
+              <li>
+                {comment.rating} {comment.rating !== '1' ? 'stars' : 'star'} --{' '}
+                {comment.author},
+                <Moment
+                  interval={0}
+                  format="YYYY/MM/DD HH:mm Z"
+                  date={comment.date}
+                />
+              </li>
+              <p />
+            </div>
+          ))}
+        </ul>
+        <Button outline color="secondary" onClick={toggleCommentModal}>
+          <span className="fa fa-pencil fa-lg mr-2" />
+          Submit Comment
+        </Button>
+        <AddComment
+          isModalOpen={isModalOpen}
+          setModalVisibility={setModalVisibility}
+          addCommentAction={addCommentAction}
+          dishId={dishId}
+        />
+      </div>
+    );
 }
 
 class DishDetail extends Component {
@@ -57,20 +75,12 @@ class DishDetail extends Component {
     this.state = {
       dish: props.dish,
       comments: props.comments,
-      isModalOpen: false,
     };
-    this.toggleCommentModal = this.toggleCommentModal.bind(this);
-  }
-
-  toggleCommentModal() {
-    const { isModalOpen } = this.state;
-    this.setState({
-      isModalOpen: !isModalOpen,
-    });
   }
 
   render() {
-    const { dish, comments, isModalOpen } = this.state;
+    const { dish, comments } = this.state;
+    const { addCommentAction } = this.props;
     if (this.dish !== null) {
       return (
         <>
@@ -92,22 +102,14 @@ class DishDetail extends Component {
                 <RenderDish dish={dish} />
               </div>
               <div className="col-12 col-sm-12 col-md-5 m-1">
-                <RenderComments comments={comments} />
-                <Button
-                  outline
-                  color="secondary"
-                  onClick={this.toggleCommentModal}
-                >
-                  <span className="fa fa-pencil fa-lg mr-2" />
-                  Submit Comment
-                </Button>
+                <RenderComments
+                  comments={comments}
+                  addCommentAction={addCommentAction}
+                  dishId={dish.id}
+                />
               </div>
             </div>
           </div>
-          <AddComment
-            isModalOpen={isModalOpen}
-            toggleCommentModal={this.toggleCommentModal}
-          />
         </>
       );
     }

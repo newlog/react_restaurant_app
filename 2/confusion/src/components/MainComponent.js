@@ -8,7 +8,9 @@ import Footer from './FooterComponent';
 import Menu from './MenuComponent';
 import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
+import addComment from '../redux/actionCreator';
 
+// https://react-redux.js.org/using-react-redux/connect-mapstate
 // all the state fields become available to the component as props thanks to the last line:
 // export default withRouter(connect(mapStateToProps)(Main));
 const mapStateToProps = (state) => {
@@ -19,6 +21,16 @@ const mapStateToProps = (state) => {
     leaders: state.leaders,
   };
 };
+
+// https://react-redux.js.org/using-react-redux/connect-mapdispatch
+// dispatching actions to the store
+// last line: export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
+const mapDispatchToProps = (dispatch) => ({
+  addCommentAction: (dishId, rating, author, comment) =>
+    // the addComment will return the action and this action is passed to the dispatcher.
+    // then the action will be available to the Main component below.
+    dispatch(addComment(dishId, rating, author, comment)),
+});
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Main extends Component {
@@ -40,6 +52,7 @@ class Main extends Component {
     };
 
     const DishWithId = ({ match }) => {
+      const { addCommentAction } = this.props;
       return (
         <DishDetail
           dish={
@@ -50,6 +63,7 @@ class Main extends Component {
           comments={comments.filter(
             (comment) => comment.dishId === parseInt(match.params.dishId, 10),
           )}
+          addCommentAction={addCommentAction}
         />
       );
     };
@@ -79,4 +93,4 @@ class Main extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(Main));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
