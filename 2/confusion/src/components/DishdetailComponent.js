@@ -12,6 +12,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import AddComment from './AddCommentComponent';
+import Loading from './LoadingComponent';
 
 function RenderDish({ dish }) {
   return (
@@ -80,8 +81,26 @@ class DishDetail extends Component {
 
   render() {
     const { dish, comments } = this.state;
-    const { addCommentAction } = this.props;
-    if (this.dish !== null) {
+    const { addCommentAction, isLoading, errMess } = this.props;
+    if (isLoading === true) {
+      return (
+        <div className="container">
+          <div className="row m-5 text-center">
+            <Loading />
+          </div>
+        </div>
+      );
+    }
+    if (errMess !== null) {
+      return (
+        <div className="container">
+          <div className="row m-5 text-center">
+            <h4>{errMess}</h4>
+          </div>
+        </div>
+      );
+    }
+    if (dish !== null) {
       return (
         <>
           <div className="container">

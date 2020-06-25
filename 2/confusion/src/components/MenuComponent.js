@@ -8,6 +8,7 @@ import {
   BreadcrumbItem,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Loading from './LoadingComponent';
 
 // a functional component
 function RenderMenuItem({ dish }) {
@@ -27,7 +28,7 @@ function RenderMenuItem({ dish }) {
 const Menu = (props) => {
   const { dishes } = props;
   // Iterate for every dish and for each one return the div
-  const menu = dishes.map((dish) => {
+  const menu = dishes.dishes.map((dish) => {
     return (
       // Whenever you construct a list of item in React, every item requires a "key" attribute.
       // The key helps React to recognize every item when rendering and only modify specific items on updates
@@ -37,6 +38,25 @@ const Menu = (props) => {
       </div>
     );
   });
+
+  if (dishes.isLoading === true) {
+    return (
+      <div className="container">
+        <div className="row m-5 text-center">
+          <Loading />
+        </div>
+      </div>
+    );
+  }
+  if (dishes.errMess !== null) {
+    return (
+      <div className="container">
+        <div className="row m-5 text-center">
+          <h4>{dishes.dishes.errMess}</h4>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">

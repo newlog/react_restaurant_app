@@ -8,7 +8,7 @@ import Footer from './FooterComponent';
 import Menu from './MenuComponent';
 import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
-import addComment from '../redux/actionCreator';
+import { addComment, fetchDishes } from '../redux/actionCreator';
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // all the state fields become available to the component as props thanks to the last line:
@@ -30,10 +30,17 @@ const mapDispatchToProps = (dispatch) => ({
     // the addComment will return the action and this action is passed to the dispatcher.
     // then the action will be available to the Main component below.
     dispatch(addComment(dishId, rating, author, comment)),
+  // same here
+  fetchDishesAction: () => dispatch(fetchDishes()),
 });
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Main extends Component {
+  componentDidMount() {
+    const { fetchDishesAction } = this.props;
+    fetchDishesAction();
+  }
+
   render() {
     // this line is to avoid eslint "Must use destructuring state assignment"
     // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
@@ -42,7 +49,10 @@ class Main extends Component {
     const HomePage = () => {
       return (
         <Home
-          dish={dishes.filter((dish) => dish.featured === true)[0]}
+          // the state for dishes has changed and now inside of the dishes state we have 3 properties (dishes, errmess, isLoading)
+          dish={dishes.dishes.filter((dish) => dish.featured === true)[0]}
+          dishesLoading={dishes.isLoading}
+          dishesErrMess={dishes.errMess}
           promotion={
             promotions.filter((promotion) => promotion.featured === true)[0]
           }
@@ -56,10 +66,12 @@ class Main extends Component {
       return (
         <DishDetail
           dish={
-            dishes.filter(
+            dishes.dishes.filter(
               (dish) => dish.id === parseInt(match.params.dishId, 10),
             )[0]
           }
+          isLoading={dishes.isLoading}
+          errMess={dishes.errMess}
           comments={comments.filter(
             (comment) => comment.dishId === parseInt(match.params.dishId, 10),
           )}
