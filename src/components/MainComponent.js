@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, actions } from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Home from './HomeComponent';
@@ -8,7 +8,13 @@ import Footer from './FooterComponent';
 import Menu from './MenuComponent';
 import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
-import { addComment, fetchDishes } from '../redux/actionCreator';
+import {
+  addComment,
+  fetchDishes,
+  fetchComments,
+  fetchPromos,
+  fetchLeaders,
+} from '../redux/actionCreator';
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // all the state fields become available to the component as props thanks to the last line:
@@ -32,13 +38,27 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(addComment(dishId, rating, author, comment)),
   // same here
   fetchDishesAction: () => dispatch(fetchDishes()),
+  fetchCommentsAction: () => dispatch(fetchComments()),
+  fetchPromosAction: () => dispatch(fetchPromos()),
+  fetchLeadersAction: () => dispatch(fetchLeaders()),
+  resetFeedbackFormAction: () => {
+    dispatch(actions.reset('feedback'));
+  },
 });
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Main extends Component {
   componentDidMount() {
-    const { fetchDishesAction } = this.props;
+    const {
+      fetchDishesAction,
+      fetchCommentsAction,
+      fetchPromosAction,
+      fetchLeadersAction,
+    } = this.props;
     fetchDishesAction();
+    fetchCommentsAction();
+    fetchPromosAction();
+    fetchLeadersAction();
   }
 
   render() {
@@ -54,9 +74,19 @@ class Main extends Component {
           dishesLoading={dishes.isLoading}
           dishesErrMess={dishes.errMess}
           promotion={
-            promotions.filter((promotion) => promotion.featured === true)[0]
+            Object.keys(promotions.promotions).length !== 0
+              ? promotions.promotions.filter(
+                  (promotion) => promotion.featured === true,
+                )[0]
+              : []
           }
-          leader={leaders.filter((leader) => leader.featured === true)[0]}
+          promoLoading={promotions.isLoading}
+          promoErrMess={promotions.errMess}
+          leader={
+            Object.keys(leaders.leaders).length !== 0
+              ? leaders.leaders.filter((leader) => leader.featured === true)[0]
+              : []
+          }
         />
       );
     };
@@ -72,9 +102,15 @@ class Main extends Component {
           }
           isLoading={dishes.isLoading}
           errMess={dishes.errMess}
-          comments={comments.filter(
-            (comment) => comment.dishId === parseInt(match.params.dishId, 10),
-          )}
+          comments={
+            Object.keys(comments.comments) !== 0
+              ? comments.comments.filter(
+                  (comment) =>
+                    comment.dishId === parseInt(match.params.dishId, 10),
+                )
+              : []
+          }
+          commentsErrMess={comments.errMess}
           addCommentAction={addCommentAction}
         />
       );
