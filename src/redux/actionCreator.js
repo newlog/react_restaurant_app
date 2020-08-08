@@ -5,15 +5,60 @@ import baseUrl from '../shared/baseUrl';
 
 /* Everything in this file are action creators */
 
-export const addComment = (dishId, rating, author, comment) => ({
+// this action creator pushes the comment into the state
+export const addComment = (comment) => ({
   type: ActionTypes.ADD_COMMENT,
-  payload: {
-    dishId, // this is equivalent to: dishId: dishId,
+  payload: comment,
+});
+
+export const commentsFailed = (errmess) => ({
+  type: ActionTypes.COMMENTS_FAILED,
+  payload: errmess,
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+  const newComment = {
+    dishId,
     rating,
     author,
     comment,
-  },
-});
+  };
+
+  newComment.date = new Date().toISOString();
+  return fetch(`${baseUrl}comments`, {
+    method: 'POST',
+    body: JSON.stringify(newComment),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
+    .then((response) => response.json())
+    .then((response) => dispatch(addComment(response))) // put the response comment into the redux store
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log('Post commments ', error.message);
+      // eslint-disable-next-line no-alert
+      alert(`Your comment could not be posted\nError: ${error.message}`);
+    });
+};
 
 export const addComments = (comments) => ({
   type: ActionTypes.ADD_COMMENTS,
@@ -28,11 +73,6 @@ export const fetchComments = () => async (dispatch) => {
   return dispatch(addComments(comments));
 };
 */
-
-export const commentsFailed = (errmess) => ({
-  type: ActionTypes.COMMENTS_FAILED,
-  payload: errmess,
-});
 
 export const fetchComments = () => (dispatch) => {
   return fetch(`${baseUrl}comments`)

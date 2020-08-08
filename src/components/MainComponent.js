@@ -9,7 +9,7 @@ import Menu from './MenuComponent';
 import About from './AboutComponent';
 import DishDetail from './DishdetailComponent';
 import {
-  addComment,
+  postComment,
   fetchDishes,
   fetchComments,
   fetchPromos,
@@ -32,10 +32,10 @@ const mapStateToProps = (state) => {
 // dispatching actions to the store
 // last line: export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
 const mapDispatchToProps = (dispatch) => ({
-  addCommentAction: (dishId, rating, author, comment) =>
+  postCommentAction: (dishId, rating, author, comment) =>
     // the addComment will return the action and this action is passed to the dispatcher.
     // then the action will be available to the Main component below.
-    dispatch(addComment(dishId, rating, author, comment)),
+    dispatch(postComment(dishId, rating, author, comment)),
   // same here
   fetchDishesAction: () => dispatch(fetchDishes()),
   fetchCommentsAction: () => dispatch(fetchComments()),
@@ -99,7 +99,7 @@ class Main extends Component {
     };
 
     const DishWithId = ({ match }) => {
-      const { addCommentAction } = this.props;
+      const { postCommentAction } = this.props;
       return (
         <DishDetail
           dish={
@@ -118,7 +118,7 @@ class Main extends Component {
               : []
           }
           commentsErrMess={comments.errMess}
-          addCommentAction={addCommentAction}
+          postCommentAction={postCommentAction}
         />
       );
     };

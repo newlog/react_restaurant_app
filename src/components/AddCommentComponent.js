@@ -15,13 +15,13 @@ import { useForm } from 'react-hook-form';
 const AddComment = ({
   isModalOpen,
   setModalVisibility,
-  addCommentAction,
+  postCommentAction,
   dishId,
 }) => {
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data) => {
-    addCommentAction(dishId, data.rating, data.name, data.comment);
+    postCommentAction(dishId, data.rating, data.name, data.comment);
   };
 
   const toggleCommentModal = () => {

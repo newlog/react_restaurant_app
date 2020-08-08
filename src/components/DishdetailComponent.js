@@ -27,7 +27,7 @@ function RenderDish({ dish }) {
   );
 }
 
-function RenderComments({ comments, addCommentAction, dishId }) {
+function RenderComments({ comments, postCommentAction, dishId }) {
   const [isModalOpen, setModalVisibility] = React.useState(false);
   // Instead of "moment" module for dates, we can use standard JS as:
   // {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse({comment.date})))}
@@ -64,7 +64,7 @@ function RenderComments({ comments, addCommentAction, dishId }) {
         <AddComment
           isModalOpen={isModalOpen}
           setModalVisibility={setModalVisibility}
-          addCommentAction={addCommentAction}
+          postCommentAction={postCommentAction}
           dishId={dishId}
         />
       </div>
@@ -82,7 +82,7 @@ class DishDetail extends Component {
 
   render() {
     const { dish, comments } = this.state;
-    const { addCommentAction, isLoading, errMess } = this.props;
+    const { postCommentAction, isLoading, errMess } = this.props;
     if (isLoading === true) {
       return (
         <div className="container">
@@ -124,7 +124,7 @@ class DishDetail extends Component {
               <div className="col-12 col-sm-12 col-md-5 m-1">
                 <RenderComments
                   comments={comments}
-                  addCommentAction={addCommentAction}
+                  postCommentAction={postCommentAction}
                   dishId={dish.id}
                 />
               </div>
