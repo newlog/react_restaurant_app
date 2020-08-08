@@ -41,12 +41,14 @@ function RenderCard({ item, isLoading, errMess }) {
 function Home(props) {
   const {
     dish,
+    dishesLoading,
+    dishesErrMess,
     promotion,
     promoLoading,
     promoErrMess,
     leader,
-    dishesLoading,
-    dishesErrMess,
+    leaderLoading,
+    leaderErrMess,
   } = props;
   return (
     <div className="container">
@@ -68,8 +70,8 @@ function Home(props) {
         <div className="col-12 col-md m-1">
           <RenderCard
             item={leader}
-            isLoading={dishesLoading}
-            errMess={dishesErrMess}
+            isLoading={leaderLoading}
+            errMess={leaderErrMess}
           />
         </div>
       </div>

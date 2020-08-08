@@ -15,6 +15,49 @@ export const addComment = (dishId, rating, author, comment) => ({
   },
 });
 
+export const addComments = (comments) => ({
+  type: ActionTypes.ADD_COMMENTS,
+  payload: comments,
+});
+
+// This got refactored with await by the IDE. Let's try it...
+/*
+export const fetchComments = () => async (dispatch) => {
+  const response = await fetch(`${baseUrl}comments`);
+  const comments = await response.json();
+  return dispatch(addComments(comments));
+};
+*/
+
+export const commentsFailed = (errmess) => ({
+  type: ActionTypes.COMMENTS_FAILED,
+  payload: errmess,
+});
+
+export const fetchComments = () => (dispatch) => {
+  return fetch(`${baseUrl}comments`)
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
+    .then((response) => response.json())
+    .then((comments) => dispatch(addComments(comments)))
+    .catch((error) => dispatch(commentsFailed(error.message)));
+};
+
 export const dishesLoading = () => ({
   type: ActionTypes.DISHES_LOADING,
 });
@@ -34,8 +77,26 @@ export const fetchDishes = () => (dispatch) => {
   dispatch(dishesLoading(true));
 
   return fetch(`${baseUrl}dishes`)
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
     .then((response) => response.json()) // convert the incoming response into JSON
-    .then((dishes) => dispatch(addDishes(dishes)));
+    .then((dishes) => dispatch(addDishes(dishes)))
+    .catch((error) => dispatch(dishesFailed(error.message)));
 };
 
 export const leadersLoading = () => ({
@@ -57,25 +118,26 @@ export const fetchLeaders = () => (dispatch) => {
   dispatch(leadersLoading(true));
 
   return fetch(`${baseUrl}leaders`)
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
     .then((response) => response.json()) // convert the incoming response into JSON
-    .then((leaders) => dispatch(addLeaders(leaders)));
-};
-
-export const commentsFailed = (errmess) => ({
-  type: ActionTypes.COMMENTS_FAILED,
-  payload: errmess,
-});
-
-export const addComments = (comments) => ({
-  type: ActionTypes.ADD_COMMENTS,
-  payload: comments,
-});
-
-// This got refactored with await by the IDE. Let's try it...
-export const fetchComments = () => async (dispatch) => {
-  const response = await fetch(`${baseUrl}comments`);
-  const comments = await response.json();
-  return dispatch(addComments(comments));
+    .then((leaders) => dispatch(addLeaders(leaders)))
+    .catch((error) => dispatch(leadersFailed(error.message)));
 };
 
 export const promosLoading = () => ({
@@ -96,6 +158,24 @@ export const fetchPromos = () => (dispatch) => {
   dispatch(promosLoading(true));
 
   return fetch(`${baseUrl}promotions`)
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
     .then((response) => response.json()) // convert the incoming response into JSON
-    .then((dishes) => dispatch(addPromos(dishes)));
+    .then((dishes) => dispatch(addPromos(dishes)))
+    .catch((error) => dispatch(promosFailed(error.message)));
 };

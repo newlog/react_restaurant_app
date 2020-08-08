@@ -70,7 +70,12 @@ class Main extends Component {
       return (
         <Home
           // the state for dishes has changed and now inside of the dishes state we have 3 properties (dishes, errmess, isLoading)
-          dish={dishes.dishes.filter((dish) => dish.featured === true)[0]}
+          dish={
+            Object.keys(dishes.dishes).length !== 0
+              ? dishes.dishes.filter((dish) => dish.featured === true)[0]
+              : []
+            // dishes.dishes.filter((dish) => dish.featured === true)[0]
+          }
           dishesLoading={dishes.isLoading}
           dishesErrMess={dishes.errMess}
           promotion={
@@ -87,6 +92,8 @@ class Main extends Component {
               ? leaders.leaders.filter((leader) => leader.featured === true)[0]
               : []
           }
+          leaderLoading={leaders.isLoading}
+          leaderErrMess={leaders.errMess}
         />
       );
     };
