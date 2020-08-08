@@ -219,3 +219,69 @@ export const fetchPromos = () => (dispatch) => {
     .then((dishes) => dispatch(addPromos(dishes)))
     .catch((error) => dispatch(promosFailed(error.message)));
 };
+
+// this action creator pushes the comment into the state
+export const addFeedback = (feedback) => ({
+  type: ActionTypes.ADD_FEEDBACK,
+  payload: feedback,
+});
+
+export const feedbackFailed = (errmess) => ({
+  type: ActionTypes.FEEDBACK_FAILED,
+  payload: errmess,
+});
+
+export const postFeedback = (
+  firstname,
+  lastname,
+  telnum,
+  email,
+  agree,
+  message,
+  contactType,
+) => (dispatch) => {
+  const newFeedback = {
+    firstname,
+    lastname,
+    telnum,
+    email,
+    agree,
+    message,
+    contactType,
+  };
+
+  newFeedback.date = new Date().toISOString();
+  return fetch(`${baseUrl}feedback`, {
+    method: 'POST',
+    body: JSON.stringify(newFeedback),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response; // when we return this response, the response is passed to then next .then()
+        }
+        const error = new Error(
+          `Error ${response.status}: ${response.statusText}`,
+        );
+        error.response = response;
+        throw error; // when the error is thrown, we can catch it later in the promise
+      },
+      // this part of code is in case no response is returned
+      (error) => {
+        const errmess = new Error(error.message);
+        throw errmess;
+      },
+    )
+    .then((response) => response.json())
+    .then((response) => dispatch(addFeedback(response))) // put the response feedback into the redux store
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log('Post feedback ', error.message);
+      // eslint-disable-next-line no-alert
+      alert(`Your feedback could not be posted\nError: ${error.message}`);
+    });
+};

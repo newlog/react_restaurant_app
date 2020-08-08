@@ -13,12 +13,19 @@ import {
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-function ContactForm() {
+const ContactForm = ({ postFeedbackAction }) => {
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data) => {
-    // eslint-disable-next-line no-alert
-    alert(JSON.stringify(data));
+    postFeedbackAction(
+      data.firstname,
+      data.lastname,
+      data.telnum,
+      data.email,
+      data.agree,
+      data.message,
+      data.contactType,
+    );
   };
 
   return (
@@ -180,7 +187,7 @@ function ContactForm() {
       </FormGroup>
     </Form>
   );
-}
+};
 
 const ContactErrorMessages = ({ errorMessage }) => {
   return (
@@ -193,7 +200,7 @@ const ContactErrorMessages = ({ errorMessage }) => {
 // eslint-disable-next-line react/prefer-stateless-function
 class Contact extends Component {
   render() {
-    // const errors = this.validate(firstname, lastname, telnum, email);
+    const { postFeedbackAction } = this.props;
 
     return (
       <div className="container">
@@ -260,7 +267,7 @@ class Contact extends Component {
             <h3>Send us your feedback</h3>
           </div>
           <div className="col-12 col-md-9">
-            <ContactForm />
+            <ContactForm postFeedbackAction={postFeedbackAction} />
           </div>
         </div>
       </div>

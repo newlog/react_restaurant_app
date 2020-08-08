@@ -14,6 +14,7 @@ import {
   fetchComments,
   fetchPromos,
   fetchLeaders,
+  postFeedback,
 } from '../redux/actionCreator';
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => {
     comments: state.comments,
     promotions: state.promotions,
     leaders: state.leaders,
+    feedback: state.feedback,
   };
 };
 
@@ -41,6 +43,26 @@ const mapDispatchToProps = (dispatch) => ({
   fetchCommentsAction: () => dispatch(fetchComments()),
   fetchPromosAction: () => dispatch(fetchPromos()),
   fetchLeadersAction: () => dispatch(fetchLeaders()),
+  postFeedbackAction: (
+    firstname,
+    lastname,
+    telnum,
+    email,
+    agree,
+    message,
+    contactType,
+  ) =>
+    dispatch(
+      postFeedback(
+        firstname,
+        lastname,
+        telnum,
+        email,
+        agree,
+        message,
+        contactType,
+      ),
+    ),
   resetFeedbackFormAction: () => {
     dispatch(actions.reset('feedback'));
   },
@@ -65,7 +87,13 @@ class Main extends Component {
     // this line is to avoid eslint "Must use destructuring state assignment"
     // https://stackoverflow.com/questions/52638426/eslint-must-use-destructuring-state-assignment
     // state is not used anymore, as the state is retrieved from the Store and converted into component props
-    const { dishes, comments, promotions, leaders } = this.props;
+    const {
+      dishes,
+      comments,
+      promotions,
+      leaders,
+      postFeedbackAction,
+    } = this.props;
     const HomePage = () => {
       return (
         <Home
@@ -74,7 +102,6 @@ class Main extends Component {
             Object.keys(dishes.dishes).length !== 0
               ? dishes.dishes.filter((dish) => dish.featured === true)[0]
               : []
-            // dishes.dishes.filter((dish) => dish.featured === true)[0]
           }
           dishesLoading={dishes.isLoading}
           dishesErrMess={dishes.errMess}
@@ -117,7 +144,7 @@ class Main extends Component {
                 )
               : []
           }
-          commentsErrMess={comments.errMess}
+          commentsErrMess={comments.errMess} // not used.
           postCommentAction={postCommentAction}
         />
       );
@@ -139,7 +166,13 @@ class Main extends Component {
             component={() => <About leads={leaders} />}
           />
           <Route path="/menu/:dishId" component={DishWithId} />
-          <Route exact path="/contactus" component={Contact} />
+          <Route
+            exact
+            path="/contactus"
+            component={() => (
+              <Contact postFeedbackAction={postFeedbackAction} />
+            )}
+          />
           <Redirect to="/home" />
         </Switch>
         <Footer />
