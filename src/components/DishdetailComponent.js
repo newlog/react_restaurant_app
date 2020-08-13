@@ -11,19 +11,25 @@ import {
   Button,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 import AddComment from './AddCommentComponent';
 import Loading from './LoadingComponent';
 import baseUrl from '../shared/baseUrl';
 
 function RenderDish({ dish }) {
   return (
-    <Card>
-      <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
-      <CardBody>
-        <CardTitle>{dish.name}</CardTitle>
-        <CardText>{dish.description}</CardText>
-      </CardBody>
-    </Card>
+    <FadeTransform
+      in
+      transformProps={{ exitTransform: 'scale(.5) translateY(-50%)' }}
+    >
+      <Card>
+        <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
+        <CardBody>
+          <CardTitle>{dish.name}</CardTitle>
+          <CardText>{dish.description}</CardText>
+        </CardBody>
+      </Card>
+    </FadeTransform>
   );
 }
 
@@ -41,21 +47,25 @@ function RenderComments({ comments, postCommentAction, dishId }) {
       <div>
         <h4>Comments</h4>
         <ul className="list-unstyled">
-          {comments.map((comment) => (
-            <div key={comment.id}>
-              <li>{comment.comment}</li>
-              <li>
-                {comment.rating} {comment.rating !== '1' ? 'stars' : 'star'} --{' '}
-                {comment.author},
-                <Moment
-                  interval={0}
-                  format="YYYY/MM/DD HH:mm Z"
-                  date={comment.date}
-                />
-              </li>
-              <p />
-            </div>
-          ))}
+          <Stagger in>
+            {comments.map((comment) => (
+              <Fade in>
+                <div key={comment.id}>
+                  <li>{comment.comment}</li>
+                  <li>
+                    {comment.rating} {comment.rating !== '1' ? 'stars' : 'star'} -- {' '}
+                    {comment.author},
+                    <Moment
+                      interval={0}
+                      format="YYYY/MM/DD HH:mm Z"
+                      date={comment.date}
+                    />
+                  </li>
+                  <p />
+                </div>
+              </Fade>
+            ))}
+          </Stagger>
         </ul>
         <Button outline color="secondary" onClick={toggleCommentModal}>
           <span className="fa fa-pencil fa-lg mr-2" />

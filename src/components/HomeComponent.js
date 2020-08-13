@@ -7,6 +7,7 @@ import {
   CardTitle,
   CardSubtitle,
 } from 'reactstrap';
+import { FadeTransform } from 'react-animation-components';
 import Loading from './LoadingComponent';
 import baseUrl from '../shared/baseUrl';
 
@@ -22,19 +23,24 @@ function RenderCard({ item, isLoading, errMess }) {
     return <h4>{errMess}</h4>;
   }
   return (
-    <Card>
-      <CardImg src={baseUrl + item.image} alt={item.name} />
-      <CardBody>
-        <CardTitle>{item.name}</CardTitle>
-        {
-          // adding JS code inside the HTML code
-          item.designation ? (
-            <CardSubtitle>{item.designation}</CardSubtitle>
-          ) : null
-        }
-        <CardText>{item.description}</CardText>
-      </CardBody>
-    </Card>
+    <FadeTransform
+      in
+      transformProps={{ exitTransform: 'scale(.5) translateY(-50%)' }}
+    >
+      <Card>
+        <CardImg src={baseUrl + item.image} alt={item.name} />
+        <CardBody>
+          <CardTitle>{item.name}</CardTitle>
+          {
+            // adding JS code inside the HTML code
+            item.designation ? (
+              <CardSubtitle>{item.designation}</CardSubtitle>
+            ) : null
+          }
+          <CardText>{item.description}</CardText>
+        </CardBody>
+      </Card>
+    </FadeTransform>
   );
 }
 
