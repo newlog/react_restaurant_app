@@ -23,7 +23,7 @@ const RenderMenuItem = ({ dish }) => {
       </Link>
     </Card>
   );
-}
+};
 
 // another way to define a component (ES6 style) (functional component)
 const Menu = (props) => {
