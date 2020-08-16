@@ -1,3 +1,6 @@
+json-server/public
+build
+.DS_Store
 # Logs
 logs
 *.log
