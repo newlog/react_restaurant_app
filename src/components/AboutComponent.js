@@ -111,8 +111,8 @@ function About(props) {
           <h2>Corporate Leadership</h2>
           <Stagger in>
             {leads.leaders.map((leader) => (
-              <Fade in>
-                <div key={leader.id}>
+              <Fade in key={leader.id}>
+                <div>
                   <RenderLeader leader={leader} />
                 </div>
               </Fade>
