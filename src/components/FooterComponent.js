@@ -44,31 +44,31 @@ function Footer() {
           <div className="col-12 col-sm-4 align-self-center">
             <div className="text-center">
               <a
-                className="btn btn-social-icon btn-google"
+                className="btn btn-social-icon btn-google mr-1"
                 href="http://google.com/+"
               >
                 <i className="fa fa-google-plus" />
               </a>
               <a
-                className="btn btn-social-icon btn-facebook"
+                className="btn btn-social-icon btn-facebook mr-1"
                 href="http://www.facebook.com/profile.php?id="
               >
                 <i className="fa fa-facebook" />
               </a>
               <a
-                className="btn btn-social-icon btn-linkedin"
+                className="btn btn-social-icon btn-linkedin mr-1"
                 href="http://www.linkedin.com/in/"
               >
                 <i className="fa fa-linkedin" />
               </a>
               <a
-                className="btn btn-social-icon btn-twitter"
+                className="btn btn-social-icon btn-twitter mr-1"
                 href="http://twitter.com/"
               >
                 <i className="fa fa-twitter" />
               </a>
               <a
-                className="btn btn-social-icon btn-google"
+                className="btn btn-social-icon btn-google mr-1"
                 href="http://youtube.com/"
               >
                 <i className="fa fa-youtube" />
@@ -80,7 +80,7 @@ function Footer() {
           </div>
         </div>
         <div className="row justify-content-center">
-          <div className="col-auto">
+          <div className="col-auto mt-3">
             <p>© Copyright 2018 Ristorante Con Fusion</p>
           </div>
         </div>

@@ -14,11 +14,12 @@ import baseUrl from '../shared/baseUrl';
 function RenderLeader({ leader }) {
   return (
     <Media>
-      <Media
-        object
-        src={`${baseUrl}${leader.image}`}
+      <img
+        width={100}
+        height={100}
+        src={`${baseUrl}images/julio.png`}
         alt={leader.name}
-        className="pt-4"
+        className="mt-4 rounded-circle"
       />
       <Media body className="col-8 pt-3">
         <Media heading>{leader.name}</Media>

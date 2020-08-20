@@ -18,7 +18,18 @@ const RenderMenuItem = ({ dish }) => {
       <Link to={`/menu/${dish.id}`}>
         <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} />
         <CardImgOverlay>
-          <CardTitle>{dish.name}</CardTitle>
+          <CardTitle>
+            <div
+              style={{
+                backgroundColor: '#000000',
+                color: '#ffffff',
+                display: 'inline-block',
+                borderRadius: '5px',
+              }}
+            >
+              <h3 className="ml-2 mr-2 mt-1">{dish.name}</h3>
+            </div>
+          </CardTitle>
         </CardImgOverlay>
       </Link>
     </Card>
