@@ -30,7 +30,9 @@ function RenderCard({ item, isLoading, errMess }) {
       <Card>
         <CardImg src={baseUrl + item.image} alt={item.name} />
         <CardBody>
-          <CardTitle><h4>{item.name}</h4></CardTitle>
+          <CardTitle>
+            <h4>{item.name}</h4>
+          </CardTitle>
           {
             // adding JS code inside the HTML code
             item.designation ? (
